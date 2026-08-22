@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BCA Master Quiz</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#10152f,#30206b,#063c5c);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:15px;
+}
+
+.app{
+  width:100%;
+  max-width:850px;
+  background:#121832;
+  border-radius:24px;
+  padding:25px;
+  box-shadow:0 15px 50px rgba(0,0,0,.5);
+}
+
+.screen{
+  display:none;
+  text-align:center;
+}
+
+.screen.active{
+  display:block;
+}
+
+.logo{
+  font-size:60px;
+  margin-bottom:10px;
+}
+
+h1{
+  font-size:38px;
+  margin:10px 0;
+}
+
+h2{
+  font-size:28px;
+}
+
+.subtitle{
+  color:#c6cbea;
+  margin-bottom:25px;
+}
+
+button{
+  border:0;
+  border-radius:14px;
+  padding:15px 20px;
+  margin:7px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  color:white;
+  background:#30385e;
+}
+
+button:active{
+  transform:scale(.97);
+}
+
+.start{
+  width:90%;
+  max-width:400px;
+  background:linear-gradient(90deg,#7355ff,#bd48ff);
+}
+
+.subject-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-top:20px;
+}
+
+.subject{
+  background:#222a4d;
+  border:1px solid #3b4572;
+  border-radius:18px;
+  padding:20px;
+  cursor:pointer;
+}
+
+.subject:hover{
+  background:#303961;
+}
+
+.subject-icon{
+  font-size:35px;
+}
+
+.subject-name{
+  font-size:18px;
+  font-weight:bold;
+  margin-top:10px;
+}
+
+.quiz-header{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.badge{
+  background:#252d52;
+  padding:10px 14px;
+  border-radius:10px;
+}
+
+.timer{
+  color:#ffd166;
+}
+
+.question{
+  background:#222a4d;
+  border-radius:18px;
+  padding:25px;
+  font-size:21px;
+  line-height:1.5;
+  margin:20px 0;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.option{
+  width:100%;
+  text-align:left;
+  background:#30385e;
+}
+
+.correct{
+  background:#16734d !important;
+}
+
+.wrong{
+  background:#7b3743 !important;
+}
+
+.feedback{
+  min-height:30px;
+  font-weight:bold;
+  margin:15px;
+}
+
+.next{
+  width:90%;
+  max-width:400px;
+  background:linear-gradient(90deg,#7355ff,#bd48ff);
+}
+
+.result-score{
+  font-size:60px;
+  font-weight:bold;
+  margin:20px;
+}
+
+.stat{
+  background:#222a4d;
+  padding:14px;
+  border-radius:12px;
+  margin:8px auto;
+  max-width:400px;
+}
+
+@media(max-width:600px){
+
+  h1{
+    font-size:29px;
+  }
+
+  .subject-grid{
+    grid-template-columns:1fr;
+  }
+
+  .options{
+    grid-template-columns:1fr;
+  }
+
+  .quiz-header{
+    flex-direction:column;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- HOME -->
+
+<section id="home" class="screen active">
+
+<div class="logo">💻</div>
+
+<h1>BCA MASTER QUIZ</h1>
+
+<p class="subtitle">
+Learn • Play • Test Your Computer Knowledge
+</p>
+
+<button class="start" onclick="openSubjects()">
+🚀 START CHALLENGE
+</button>
+
+<p class="subtitle">
+5 Subjects • 50 Questions
+</p>
+
+</section>
+
+
+<!-- SUBJECTS -->
+
+<section id="subjects" class="screen">
+
+<h2>🎓 SELECT A SUBJECT</h2>
+
+<p class="subtitle">
+Choose any subject to start your quiz.
+</p>
+
+<div id="subjectGrid" class="subject-grid"></div>
+
+<button onclick="showScreen('home')">
+🏠 HOME
+</button>
+
+</section>
+
+
+<!-- QUIZ -->
+
+<section id="quiz" class="screen">
+
+<div class="quiz-header">
+
+<div class="badge" id="subjectTitle">
+Subject
+</div>
+
+<div class="badge">
+⭐ Score: <span id="score">0</span>
+</div>
+
+<div class="badge timer">
+⏱️ <span id="timer">15</span>
+</div>
+
+</div>
+
+<p class="subtitle" id="questionNumber">
+Question 1 / 10
+</p>
+
+<div class="question" id="question">
+Question
+</div>
+
+<div class="options" id="options"></div>
+
+<div class="feedback" id="feedback"></div>
+
+<button id="nextButton" class="next" style="display:none" onclick="nextQuestion()">
+NEXT QUESTION →
+</button>
+
+</section>
+
+
+<!-- RESULT -->
+
+<section id="result" class="screen">
+
+<div class="logo">🏆</div>
+
+<h2>QUIZ COMPLETE!</h2>
+
+<div class="result-score" id="finalScore">
+0
+</div>
+
+<p class="subtitle">
+TOTAL POINTS
+</p>
+
+<div id="resultDetails"></div>
+
+<button class="start" onclick="openSubjects()">
+🎮 PLAY AGAIN
+</button>
+
+<br>
+
+<button onclick="showScreen('home')">
+🏠 HOME
+</button>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* =========================
+   QUESTION DATA
+========================= */
+
+const quizData = {
+
+"Computer Fundamentals":{
+icon:"💻",
+questions:[
+
+{
+q:"What is the brain of a computer?",
+a:["Monitor","CPU","Keyboard","Printer"],
+correct:1
+},
+
+{
+q:"Which memory is temporary?",
+a:["ROM","RAM","Hard Disk","DVD"],
+correct:1
+},
+
+{
+q:"What does CPU stand for?",
+a:[
+"Central Processing Unit",
+"Computer Personal Unit",
+"Central Program Utility",
+"Control Processing User"
+],
+correct:0
+},
+
+{
+q:"Which one is an operating system?",
+a:["HTML","Windows","Python","SQL"],
+correct:1
+},
+
+{
+q:"Which device is used to type text?",
+a:["Monitor","Printer","Keyboard","Speaker"],
+correct:2
+},
+
+{
+q:"How many bits are in one byte?",
+a:["4","8","16","32"],
+correct:1
+},
+
+{
+q:"Which is an output device?",
+a:["Mouse","Keyboard","Monitor","Scanner"],
+correct:2
+},
+
+{
+q:"Which number system does a computer mainly use?",
+a:["Decimal","Binary","Roman","Octal"],
+correct:1
+},
+
+{
+q:"Which storage device is generally faster?",
+a:["SSD","DVD","Floppy Disk","Tape"],
+correct:0
+},
+
+{
+q:"What does USB stand for?",
+a:[
+"Universal Serial Bus",
+"United System Board",
+"User Storage Box",
+"Universal Software Base"
+],
+correct:0
+}
+
+]
+},
+
+
+"C / C++ Programming":{
+icon:"👨‍💻",
+questions:[
+
+{
+q:"Which symbol ends a C statement?",
+a:[".",":",";","#"],
+correct:2
+},
+
+{
+q:"Which function starts a C program?",
+a:["start()","main()","begin()","run()"],
+correct:1
+},
+
+{
+q:"Which data type stores whole numbers?",
+a:["float","char","int","double"],
+correct:2
+},
+
+{
+q:"Which symbol is used for a single-line comment?",
+a:["//","##","<!--","**"],
+correct:0
+},
+
+{
+q:"Which loop runs while a condition is true?",
+a:["if","while","switch","case"],
+correct:1
+},
+
+{
+q:"Which operator is used for assignment?",
+a:["==","=","!=","<="],
+correct:1
+},
+
+{
+q:"Which keyword creates a constant?",
+a:["constant","const","fixed","static"],
+correct:1
+},
+
+{
+q:"C++ is based on which language?",
+a:["C","Java","Python","HTML"],
+correct:0
+},
+
+{
+q:"What does a pointer store?",
+a:["Color","Memory address","File name","Password"],
+correct:1
+},
+
+{
+q:"Which statement is used for decision making?",
+a:["if","print","scan","include"],
+correct:0
+}
+
+]
+},
+
+
+"Data Structures":{
+icon:"🧩",
+questions:[
+
+{
+q:"Which data structure follows LIFO?",
+a:["Queue","Stack","Array","Tree"],
+correct:1
+},
+
+{
+q:"Which data structure follows FIFO?",
+a:["Stack","Queue","Graph","Tree"],
+correct:1
+},
+
+{
+q:"Which structure contains nodes and links?",
+a:["Linked List","Array","Integer","String"],
+correct:0
+},
+
+{
+q:"Which is a linear data structure?",
+a:["Tree","Graph","Array","Network"],
+correct:2
+},
+
+{
+q:"Which structure is commonly used in recursion?",
+a:["Stack","Queue","Graph","Heap"],
+correct:0
+},
+
+{
+q:"A tree with at most two children is called?",
+a:["Binary Tree","Linear Tree","Double Tree","Pair Tree"],
+correct:0
+},
+
+{
+q:"Which structure follows FIFO?",
+a:["Stack","Queue","Heap","Tree"],
+correct:1
+},
+
+{
+q:"Which search divides a sorted array?",
+a:["Linear Search","Binary Search","Random Search","Direct Search"],
+correct:1
+},
+
+{
+q:"Which structure represents relationships between nodes?",
+a:["Graph","Stack","Queue","Array"],
+correct:0
+},
+
+{
+q:"Which sorting method swaps adjacent elements?",
+a:["Merge Sort","Bubble Sort","Binary Sort","Tree Sort"],
+correct:1
+}
+
+]
+},
+
+
+"DBMS & SQL":{
+icon:"🗄️",
+questions:[
+
+{
+q:"What does DBMS stand for?",
+a:[
+"Database Management System",
+"Data Backup Management Software",
+"Digital Base Management System",
+"Database Machine System"
+],
+correct:0
+},
+
+{
+q:"Which SQL command retrieves data?",
+a:["GET","SELECT","OPEN","FETCH"],
+correct:1
+},
+
+{
+q:"Which key uniquely identifies a record?",
+a:["Foreign Key","Primary Key","Secondary Key","Normal Key"],
+correct:1
+},
+
+{
+q:"Which command adds new data?",
+a:["INSERT","ADD","CREATE","PUT"],
+correct:0
+},
+
+{
+q:"Which command modifies records?",
+a:["CHANGE","UPDATE","MODIFY","EDIT"],
+correct:1
+},
+
+{
+q:"Which command removes records?",
+a:["DELETE","REMOVE","CLEAR","DROP"],
+correct:0
+},
+
+{
+q:"What does SQL stand for?",
+a:[
+"Structured Query Language",
+"Simple Query Language",
+"System Question Language",
+"Structured Question List"
+],
+correct:0
+},
+
+{
+q:"A foreign key is mainly used to?",
+a:[
+"Create graphics",
+"Link tables",
+"Start computer",
+"Encrypt files"
+],
+correct:1
+},
+
+{
+q:"Which clause filters records?",
+a:["WHERE","FILTER","WHEN","CHECK"],
+correct:0
+},
+
+{
+q:"Which command creates a table?",
+a:[
+"MAKE TABLE",
+"CREATE TABLE",
+"NEW TABLE",
+"BUILD TABLE"
+],
+correct:1
+}
+
+]
+},
+
+
+"Web Development":{
+icon:"🌐",
+questions:[
+
+{
+q:"What does HTML stand for?",
+a:[
+"HyperText Markup Language",
+"HighText Machine Language",
+"Hyper Tool Markup Language",
+"HomeText Markup Language"
+],
+correct:0
+},
+
+{
+q:"Which language is used to style web pages?",
+a:["HTML","CSS","SQL","C"],
+correct:1
+},
+
+{
+q:"Which language adds interactivity to websites?",
+a:["JavaScript","SQL","C++","XML"],
+correct:0
+},
+
+{
+q:"What does URL stand for?",
+a:[
+"Uniform Resource Locator",
+"Universal Reading Link",
+"User Resource Location",
+"Uniform Routing Language"
+],
+correct:0
+},
+
+{
+q:"Which protocol is commonly used for secure websites?",
+a:["HTTP","HTTPS","FTP","SMTP"],
+correct:1
+},
+
+{
+q:"What does IP stand for?",
+a:[
+"Internet Protocol",
+"Internal Program",
+"Internet Program",
+"Input Protocol"
+],
+correct:0
+},
+
+{
+q:"Which device connects different networks?",
+a:["Router","Keyboard","Monitor","Printer"],
+correct:0
+},
+
+{
+q:"What does DNS translate?",
+a:[
+"Domain names to IP addresses",
+"Files to folders",
+"Images to text",
+"Passwords to usernames"
+],
+correct:0
+},
+
+{
+q:"Which protocol is used to send email?",
+a:["SMTP","HTTP","FTP","DNS"],
+correct:0
+},
+
+{
+q:"Which HTML tag creates a hyperlink?",
+a:["<link>","<a>","<href>","<url>"],
+correct:1
+}
+
+]
+}
+
+};
+
+
+/* =========================
+   GAME VARIABLES
+========================= */
+
+let currentSubject="";
+let currentQuestion=0;
+let score=0;
+let correctAnswers=0;
+let wrongAnswers=0;
+let timerInterval=null;
+let timeLeft=15;
+
+
+/* =========================
+   SCREEN CONTROL
+========================= */
+
+function showScreen(id){
+
+document.querySelectorAll(".screen").forEach(function(screen){
+
+screen.classList.remove("active");
+
+});
+
+document.getElementById(id).classList.add("active");
+
+}
+
+
+/* =========================
+   SUBJECT SCREEN
+========================= */
+
+function openSubjects(){
+
+clearInterval(timerInterval);
+
+showScreen("subjects");
+
+const grid=document.getElementById("subjectGrid");
+
+grid.innerHTML="";
+
+Object.keys(quizData).forEach(function(subject){
+
+const data=quizData[subject];
+
+const button=document.createElement("div");
+
+button.className="subject";
+
+button.innerHTML=
+"<div class='subject-icon'>"+
+data.icon+
+"</div>"+
+"<div class='subject-name'>"+
+subject+
+"</div>"+
+"<p class='subtitle'>10 Questions</p>";
+
+button.addEventListener("click",function(){
+
+startQuiz(subject);
+
+});
+
+grid.appendChild(button);
+
+});
+
+}
+
+
+/* =========================
+   START QUIZ
+========================= */
+
+function startQuiz(subject){
+
+currentSubject=subject;
+
+currentQuestion=0;
+
+score=0;
+
+correctAnswers=0;
+
+wrongAnswers=0;
+
+showScreen("quiz");
+
+loadQuestion();
+
+}
+
+
+/* =========================
+   LOAD QUESTION
+========================= */
+
+function loadQuestion(){
+
+clearInterval(timerInterval);
+
+const questionData=
+quizData[currentSubject].questions[currentQuestion];
+
+document.getElementById("subjectTitle").textContent=
+currentSubject;
+
+document.getElementById("score").textContent=
+score;
+
+document.getElementById("questionNumber").textContent=
+"Question "+
+(currentQuestion+1)+
+" / "+
+quizData[currentSubject].questions.length;
+
+document.getElementById("question").textContent=
+questionData.q;
+
+document.getElementById("feedback").textContent="";
+
+document.getElementById("nextButton").style.display="none";
+
+const options=
+document.getElementById("options");
+
+options.innerHTML="";
+
+questionData.a.forEach(function(answer,index){
+
+const button=document.createElement("button");
+
+button.className="option";
+
+button.textContent=
+String.fromCharCode(65+index)+
+". "+
+answer;
+
+button.addEventListener("click",function(){
+
+checkAnswer(index);
+
+});
+
+options.appendChild(button);
+
+});
+
+startTimer();
+
+}
+
+
+/* =========================
+   TIMER
+========================= */
+
+function startTimer(){
+
+timeLeft=15;
+
+document.getElementById("timer").textContent=
+timeLeft;
+
+timerInterval=setInterval(function(){
+
+timeLeft--;
+
+document.getElementById("timer").textContent=
+timeLeft;
+
+if(timeLeft<=0){
+
+clearInterval(timerInterval);
+
+checkAnswer(-1);
+
+}
+
+},1000);
+
+}
+
+
+/* =========================
+   CHECK ANSWER
+========================= */
+
+function checkAnswer(selected){
+
+clearInterval(timerInterval);
+
+const questionData=
+quizData[currentSubject].questions[currentQuestion];
+
+const buttons=
+document.querySelectorAll(".option");
+
+buttons.forEach(function(button){
+
+button.disabled=true;
+
+});
+
+if(selected===questionData.correct){
+
+score+=10;
+
+correctAnswers++;
+
+if(selected>=0){
+
+buttons[selected].classList.add("correct");
+
+}
+
+document.getElementById("feedback").textContent=
+"✅ Correct! +10 Points";
+
+}else{
+
+wrongAnswers++;
+
+if(selected>=0){
+
+buttons[selected].classList.add("wrong");
+
+}
+
+buttons[questionData.correct].classList.add("correct");
+
+document.getElementById("feedback").textContent=
+"❌ Wrong Answer";
+
+}
+
+document.getElementById("score").textContent=
+score;
+
+document.getElementById("nextButton").style.display=
+"inline-block";
+
+}
+
+
+/* =========================
+   NEXT QUESTION
+========================= */
+
+function nextQuestion(){
+
+currentQuestion++;
+
+if(
+currentQuestion>=
+quizData[currentSubject].questions.length
+){
+
+showResult();
+
+}else{
+
+loadQuestion();
+
+}
+
+}
+
+
+/* =========================
+   RESULT
+========================= */
+
+function showResult(){
+
+clearInterval(timerInterval);
+
+showScreen("result");
+
+const total=
+quizData[currentSubject].questions.length;
+
+const accuracy=
+Math.round(
+(correctAnswers/total)*100
+);
+
+document.getElementById("finalScore").textContent=
+score;
+
+let rating="Keep Practicing 💪";
+
+if(accuracy>=90){
+
+rating="🏆 BCA EXPERT";
+
+}else if(accuracy>=75){
+
+rating="🔥 EXCELLENT";
+
+}else if(accuracy>=60){
+
+rating="👍 GOOD JOB";
+
+}
+
+document.getElementById("resultDetails").innerHTML=
+
+"<div class='stat'>"+
+"✅ Correct: "+
+correctAnswers+
+"</div>"+
+
+"<div class='stat'>"+
+"❌ Wrong: "+
+wrongAnswers+
+"</div>"+
+
+"<div class='stat'>"+
+"📊 Accuracy: "+
+accuracy+
+"%"+
+"</div>"+
+
+"<div class='stat'>"+
+"⭐ "+
+rating+
+"</div>";
+
+}
+
+</script>
+
+</body>
+  </html>
